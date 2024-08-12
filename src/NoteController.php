@@ -31,7 +31,7 @@ class NoteController
                 $json = file_get_contents("php://input");
                 $data = (array) json_decode($json, true);
                 //Validate data
-                $errors = $this->getValidationErrors($data);
+                $errors = $this->getValidationErrors($data, false);
                 if (!empty($errors)) {
                     http_response_code(422); //Unprocessable Entity
                     echo json_encode(["errors" => $errors]);
@@ -44,9 +44,18 @@ class NoteController
                     "message" => "Note $id Updated"
                 ]);
                 break;
+
+            case 'DELETE':
+                $rows = $this->gateway->delete($id);
+                echo json_encode([
+                    "rows" => $rows,
+                    "message" => "Note $id Deleted"
+                ]);
+                break;
+
             default:
                 http_response_code(405); //Method Not Allowed
-                header("Allow: GET, PATCH");
+                header("Allow: GET, PATCH, DELETE");
                 break;
         }
     }
@@ -84,11 +93,11 @@ class NoteController
         }
     }
 
-    private function getValidationErrors(array $data): array
+    private function getValidationErrors(array $data, bool $is_new = true): array
     {
         $errors = [];
 
-        if (empty($data['content'])) {
+        if ($is_new && empty($data['content'])) {
             $errors[] = "Content is required";
         }
         if (key_exists('color', $data)) {
