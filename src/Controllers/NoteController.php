@@ -1,8 +1,12 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Services\NoteServices;
+
 class NoteController
 {
-    public function __construct(private NoteGateway $gateway) {}
+    public function __construct(private NoteServices $gateway) {}
 
     public function processRequest(string $method, ?string $id): void
     {

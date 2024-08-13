@@ -1,6 +1,11 @@
 <?php
 
-class NoteGateway
+namespace App\Services;
+
+use PDO;
+use App\Config\Database;
+
+class NoteServices
 {
 
     private PDO $conn;
