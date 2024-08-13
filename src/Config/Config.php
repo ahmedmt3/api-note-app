@@ -23,7 +23,7 @@ class Config
 
         if ($parts[2] !== 'notes') {
             http_response_code(404);
-            echo json_encode(["error"=>"Page Not Found"]);
+            echo json_encode(["error" => "Page Not Found"]);
             exit;
         }
 
