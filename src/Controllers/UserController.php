@@ -2,9 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Services\UserServices;
+
 class UserController
 {
-
+public function __construct(private UserServices $userServices)
+{
+    
+}
 
     public function processRequest(string $method, string $id)
     {
