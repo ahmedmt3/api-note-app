@@ -3,10 +3,11 @@
 namespace App\Controllers;
 
 use App\Services\NoteServices;
+use App\Utils\Helpers;
 
 class NoteController
 {
-    public function __construct(private NoteServices $gateway) {}
+    public function __construct(private NoteServices $noteServices) {}
 
     public function processRequest(string $method, ?string $id): void
     {
@@ -19,7 +20,7 @@ class NoteController
     // Singel Resource
     private function processResourceRequest(string $method, string $id)
     {
-        $note = $this->gateway->get($id);
+        $note = $this->noteServices->get($id);
         //If Note doesn't exist
         if (!$note) {
             http_response_code(404);
@@ -35,13 +36,13 @@ class NoteController
                 $json = file_get_contents("php://input");
                 $data = (array) json_decode($json, true);
                 //Validate data
-                $errors = $this->getValidationErrors($data, false);
+                $errors = Helpers::NoteValidationErrors($data, false);
                 if (!empty($errors)) {
                     http_response_code(422); //Unprocessable Entity
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
-                $rows = $this->gateway->update($note, $data);
+                $rows = $this->noteServices->update($note, $data);
 
                 echo json_encode([
                     "rows" => $rows,
@@ -50,7 +51,7 @@ class NoteController
                 break;
 
             case 'DELETE':
-                $rows = $this->gateway->delete($id);
+                $rows = $this->noteServices->delete($id);
                 echo json_encode([
                     "rows" => $rows,
                     "message" => "Note $id Deleted"
@@ -69,20 +70,20 @@ class NoteController
     {
         switch ($method) {
             case 'GET':
-                echo json_encode($this->gateway->getAll());
+                echo json_encode($this->noteServices->getAll());
                 break;
 
             case 'POST':
                 $json = file_get_contents("php://input");
                 $data = (array) json_decode($json, true);
                 //Validate data
-                $errors = $this->getValidationErrors($data);
+                $errors = Helpers::NoteValidationErrors($data);
                 if (!empty($errors)) {
                     http_response_code(422); //Unprocessable Entity
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
-                $id = $this->gateway->create($data);
+                $id = $this->noteServices->create($data);
                 http_response_code(201);
                 echo json_encode([
                     "id" => $id,
@@ -95,20 +96,5 @@ class NoteController
                 header("Allow: GET, POST");
                 break;
         }
-    }
-
-    private function getValidationErrors(array $data, bool $is_new = true): array
-    {
-        $errors = [];
-
-        if ($is_new && empty($data['content'])) {
-            $errors[] = "Content is required";
-        }
-        if (key_exists('color', $data)) {
-            if (!preg_match('/^[a-fA-F0-9]{6}$/', $data['color'])) {
-                $errors[] = "Invalid hex-color format";
-            }
-        }
-        return $errors;
     }
 }

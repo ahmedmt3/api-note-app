@@ -15,4 +15,19 @@ class Helpers
         $Urlparts = explode('/', $url);
         return $Urlparts[3] ?? null;
     }
+
+    public static function NoteValidationErrors(array $data, bool $is_new = true): array
+    {
+        $errors = [];
+
+        if ($is_new && empty($data['content'])) {
+            $errors[] = "Content is required";
+        }
+        if (key_exists('color', $data)) {
+            if (!preg_match('/^[a-fA-F0-9]{6}$/', $data['color'])) {
+                $errors[] = "Invalid hex-color format";
+            }
+        }
+        return $errors;
+    }
 }
