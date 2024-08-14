@@ -7,6 +7,7 @@ namespace App;
 use App\Config\Config;
 use App\Config\Database;
 use App\Controllers\NoteController;
+use App\Controllers\UrlController;
 use App\Services\NoteServices;
 use App\Utils\ErrorHandler;
 
@@ -19,8 +20,7 @@ set_exception_handler([ErrorHandler::class, 'handelException']);
 
 header("Content-type: Application/json; charset=UTF-8");
 
-Config::checkUrl($_SERVER['REQUEST_URI']);
-
+UrlController::checkUrl($_SERVER['REQUEST_URI']);
 
 $db_host = Config::DB_HOST;
 $db_name = Config::DB_NAME;
@@ -33,4 +33,4 @@ $noteServices = new NoteServices($database);
 
 $controller = new NoteController($noteServices);
 
-$controller->processRequest($_SERVER['REQUEST_METHOD'], Config::getId());
+$controller->processRequest($_SERVER['REQUEST_METHOD'], UrlController::getId());
