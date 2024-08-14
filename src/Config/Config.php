@@ -6,13 +6,18 @@ class Config
 {
 
     // Database Host name
-    public const DB_HOST = "localhost";
+    private const DB_HOST = "localhost";
     // Database Name
-    public const DB_NAME = "notes_app";
+    private const DB_NAME = "notes_app";
     // Database username
-    public const DB_USER = "root";
+    private const DB_USER = "root";
     // Database Password
-    public const BD_PASS = "";
+    private const DB_PASS = "";
 
-    
+    public static const DB_CONFIG = [
+        'DB_HOST' => $this::DB_HOST,
+        'DB_NAME' => $this::DB_NAME,
+        'DB_USER' => $this::DB_USER,
+        'DB_NAME' => $this::DB_PASS
+    ];
 }

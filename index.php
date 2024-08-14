@@ -22,12 +22,8 @@ header("Content-type: Application/json; charset=UTF-8");
 
 UrlController::checkUrl($_SERVER['REQUEST_URI']);
 
-$db_host = Config::DB_HOST;
-$db_name = Config::DB_NAME;
-$db_user = Config::DB_USER;
-$db_pass = Config::BD_PASS;
 
-$database = new Database($db_host, $db_name, $db_user, $db_pass);
+$database = new Database(Config::DB_CONFIG);
 
 $noteServices = new NoteServices($database);
 
