@@ -20,6 +20,10 @@ class Helpers
     {
         $errors = [];
 
+        if (empty($data)) {
+            $errors[] = "Data is empty or not provided";
+        }
+
         if ($is_new && empty($data['content'])) {
             $errors[] = "Content is required";
         }
