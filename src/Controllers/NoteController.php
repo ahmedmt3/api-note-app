@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Services\NoteServices;
 use App\Utils\Helpers;
+use App\Utils\ResponseCodes;
 
 class NoteController
 {
@@ -23,7 +24,7 @@ class NoteController
         $note = $this->noteServices->get($id);
         //If Note doesn't exist
         if (!$note) {
-            http_response_code(404);
+            http_response_code(ResponseCodes::NOT_FOUND);
             echo json_encode(["message" => "Note not found"]);
             return;
         }
@@ -38,7 +39,7 @@ class NoteController
                 //Validate data
                 $errors = Helpers::NoteValidationErrors($data, false);
                 if (!empty($errors)) {
-                    http_response_code(422); //Unprocessable Entity
+                    http_response_code(ResponseCodes::UNPROCESSABLE_ENTITY);
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
@@ -59,7 +60,7 @@ class NoteController
                 break;
 
             default:
-                http_response_code(405); //Method Not Allowed
+                http_response_code(ResponseCodes::METHOD_NOT_ALLOWED);
                 header("Allow: GET, PATCH, DELETE");
                 break;
         }
@@ -77,22 +78,22 @@ class NoteController
                 $json = file_get_contents("php://input");
                 $data = (array) json_decode($json, true);
                 //Validate data
-                $errors = Helpers::NoteValidationErrors($data);
+                $errors = Helpers::noteValidationErrors($data);
                 if (!empty($errors)) {
-                    http_response_code(422); //Unprocessable Entity
+                    http_response_code(ResponseCodes::UNPROCESSABLE_ENTITY);
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
                 $id = $this->noteServices->create($data);
-                http_response_code(201);
+                http_response_code(ResponseCodes::CREATED);
                 echo json_encode([
-                    "id" => $id,
+                    "id" => (int) $id,
                     "message" => "Note Created"
                 ]);
                 break;
 
             default:
-                http_response_code(405); //Method Not Allowed
+                http_response_code(ResponseCodes::METHOD_NOT_ALLOWED);
                 header("Allow: GET, POST");
                 break;
         }

@@ -12,6 +12,7 @@ use App\Services\NoteServices;
 use App\Services\UserServices;
 use App\Utils\ErrorHandler;
 use App\Utils\Helpers;
+use App\Utils\ResponseCodes;
 
 // Auto Loading Classes
 require __DIR__ . "/src/Config/autoloader.php";
@@ -34,12 +35,12 @@ switch ($end_point) {
         break;
 
     case 'users':
-        $userServices = new UserServices();
+        $userServices = new UserServices($database);
         $controller = new UserController($userServices);
         break;
 
     default:
-        http_response_code(404);
+        http_response_code(ResponseCodes::NOT_FOUND);
         echo json_encode(["error" => "Not Found"]);
         exit;
 }

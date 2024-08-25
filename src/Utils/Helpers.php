@@ -16,7 +16,7 @@ class Helpers
         return $Urlparts[3] ?? null;
     }
 
-    public static function NoteValidationErrors(array $data, bool $is_new = true): array
+    public static function noteValidationErrors(array $data, bool $is_new = true): array
     {
         $errors = [];
 
@@ -28,6 +28,23 @@ class Helpers
                 $errors[] = "Invalid hex-color format";
             }
         }
+        return $errors;
+    }
+
+    public static function userValidationErrors(array $data): array
+    {
+        $errors = [];
+
+        if (empty($data['username'])) {
+            $errors[] = "Username is required";
+        }
+        if (empty($data['email'])) {
+            $errors[] = "Email is required";
+        }
+        if (empty($data['password'])) {
+            $errors[] = "Password is required";
+        }
+
         return $errors;
     }
 }
