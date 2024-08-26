@@ -8,7 +8,7 @@ class Helpers
     public static function get_end_point(string $url): string
     {
         $Urlparts = explode('/', $url);
-        return $Urlparts[2];
+        return substr($Urlparts[2], 0, 5);
     }
     public static function getId(string $url): string | null
     {

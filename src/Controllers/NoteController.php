@@ -3,12 +3,13 @@
 namespace App\Controllers;
 
 use App\Services\NoteServices;
+use App\Services\UserServices;
 use App\Utils\Helpers;
 use App\Utils\ResponseCodes;
 
 class NoteController
 {
-    public function __construct(private NoteServices $noteServices) {}
+    public function __construct(private NoteServices $noteServices, private UserServices $userServices) {}
 
     public function processRequest(string $method, ?string $id): void
     {
@@ -71,7 +72,20 @@ class NoteController
     {
         switch ($method) {
             case 'GET':
-                echo json_encode($this->noteServices->getAll());
+                // Validating user
+                $id = $_GET['user'] ?? null;
+                if (empty($id) || !is_numeric($id)) {
+                    http_response_code(ResponseCodes::UNAUTHORIZED);
+                    echo json_encode(["message" => "Unauthorized"]);
+                    break;
+                }
+                $user = $this->userServices->get($id);
+                if (!$user) {
+                    http_response_code(ResponseCodes::NOT_FOUND);
+                    echo json_encode(["message" => "User not found"]);
+                    break;
+                }
+                echo json_encode($this->noteServices->getAll($id));
                 break;
 
             case 'POST':

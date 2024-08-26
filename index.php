@@ -30,8 +30,9 @@ $database = new Database(Config::DB_CONFIG);
 
 switch ($end_point) {
     case 'notes':
+        $userServices = new UserServices($database);
         $noteServices = new NoteServices($database);
-        $controller = new NoteController($noteServices);
+        $controller = new NoteController($noteServices, $userServices);
         break;
 
     case 'users':

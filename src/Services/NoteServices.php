@@ -15,9 +15,9 @@ class NoteServices
         $this->conn = $database->getConnection();
     }
 
-    public function getAll(): array
+    public function getAll(int $id): array
     {
-        $sql  = "SELECT * FROM `notes`";
+        $sql  = "SELECT * FROM `notes` WHERE `user_id` = $id ORDER BY `last_modified` DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
 
@@ -28,9 +28,10 @@ class NoteServices
     public function create(array $data): string
     {
 
-        $sql = "INSERT INTO `notes` (title, content, color) VALUES (:title, :content, :color)";
+        $sql = "INSERT INTO `notes` (user_id, title, content, color) VALUES (:user_id, :title, :content, :color)";
         $stmt = $this->conn->prepare($sql);
 
+        $stmt->bindValue(':user_id', $data['user_id']);
         $stmt->bindValue(':title', $data['title'] ?? 'New note');
         $stmt->bindValue(':content', $data['content']);
         $stmt->bindValue(':color', $data['color'] ?? 'FFFFFF');
