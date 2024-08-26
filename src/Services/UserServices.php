@@ -62,15 +62,15 @@ class UserServices
 
     public function login(array $data): array|false
     {
-        $email = $data['email'];
+        $username = $data['username'];
         $password = $data['password'];
-        if (!$email || !$password) {
+        if (!$username || !$password) {
             return false;
         }
         $password = sha1($password);
-        $sql = "SELECT * FROM `users` WHERE email = ? AND password = ?";
+        $sql = "SELECT * FROM `users` WHERE username = ? AND password = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$email, $password]);
+        $stmt->execute([$username, $password]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) unset($user['password']);

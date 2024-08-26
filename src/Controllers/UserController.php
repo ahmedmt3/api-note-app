@@ -65,6 +65,13 @@ class UserController
                 // Determine if Login or Signup request
                 if (isset($data['action']) && $data['action'] === 'login') {
                     //========[ Login Case ]========
+                    //Validating user data
+                    $errors = Helpers::userValidationErrors($data);
+                    if (!empty($errors)) {
+                        http_response_code(ResponseCodes::UNPROCESSABLE_ENTITY);
+                        echo json_encode(["errors" => $errors]);
+                        break;
+                    }
                     $user = $this->userServices->login($data);
                     if ($user) {
                         echo json_encode([
@@ -78,7 +85,7 @@ class UserController
                 } else {
                     //=======[ Signup Case ]=========
                     //Validating user data
-                    $errors = Helpers::userValidationErrors($data);
+                    $errors = Helpers::userValidationErrors($data, true);
                     if (!empty($errors)) {
                         http_response_code(ResponseCodes::UNPROCESSABLE_ENTITY);
                         echo json_encode(["errors" => $errors]);

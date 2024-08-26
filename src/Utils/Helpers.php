@@ -35,14 +35,14 @@ class Helpers
         return $errors;
     }
 
-    public static function userValidationErrors(array $data): array
+    public static function userValidationErrors(array $data, bool $is_signup = false): array
     {
         $errors = [];
 
         if (empty($data['username'])) {
             $errors[] = "Username is required";
         }
-        if (empty($data['email'])) {
+        if (empty($data['email']) && $is_signup) {
             $errors[] = "Email is required";
         }
         if (empty($data['password'])) {
