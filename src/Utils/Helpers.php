@@ -8,12 +8,12 @@ class Helpers
     public static function get_end_point(string $url): string
     {
         $Urlparts = explode('/', $url);
-        return substr($Urlparts[2], 0, 5);
+        return substr($Urlparts[1], 0, 5);
     }
     public static function getId(string $url): string | null
     {
         $Urlparts = explode('/', $url);
-        return $Urlparts[3] ?? null;
+        return $Urlparts[2] ?? null;
     }
 
     public static function noteValidationErrors(array $data, bool $is_new = true): array
